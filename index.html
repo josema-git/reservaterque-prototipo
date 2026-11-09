@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReservaTerque: prototipo funcional</title>
+  <meta name="description" content="Prototipo funcional del módulo de reservas automatizadas de Terque: disponibilidad, pago en línea y confirmación automática.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#dueno"><span class="brand__name">ReservaTerque</span><span class="brand__tag">prototipo funcional</span></a>
+    <nav class="roles" aria-label="Rol">
+      <a href="#dueno" data-route="dueno">Dueño</a>
+      <a href="#cuidador" data-route="cuidador">Cuidador</a>
+      <a href="#admin" data-route="admin">Administración</a>
+      <a href="#pasarela" data-route="pasarela">Pasarela (pruebas)</a>
+    </nav>
+    <div class="simclock">
+      <span class="simclock__label">Reloj simulado</span>
+      <strong id="clock">--</strong>
+      <div class="simclock__buttons">
+        <button type="button" data-action="clock-advance" data-minutes="10" data-label="10 minutos">+10 min</button>
+        <button type="button" data-action="clock-advance" data-minutes="60" data-label="1 hora">+1 h</button>
+        <button type="button" data-action="clock-advance" data-minutes="1440" data-label="1 día">+1 día</button>
+        <button type="button" data-action="clock-reset" title="Volver a la hora real">Hora real</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main id="view" tabindex="-1"><p class="empty">Cargando prototipo…</p></main>
+    <aside class="inbox-panel" aria-labelledby="inbox-title">
+      <h2 id="inbox-title">Avisos</h2>
+      <div id="inbox"></div>
+      <button type="button" class="btn btn--ghost btn--small reset" data-action="reset-data">Reiniciar datos de la demo</button>
+    </aside>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <noscript>Este prototipo necesita JavaScript habilitado.</noscript>
+  <script type="module" src="src/ui/main.js"></script>
+</body>
+</html>
