@@ -25,24 +25,35 @@ const PATTERNS = {
 };
 
 export async function seedIfEmpty(container, storage) {
-  if (storage.getItem('reservaterque:seed') === SEED_VERSION && (await container.repos.caregivers.count()) > 0) return false;
-  const { repos, clock } = container;
-  for (const data of CAREGIVERS) await repos.caregivers.save(new Caregiver(data));
-  for (const owner of OWNERS) await repos.owners.save(owner);
+  const { repos } = container;
+  const firstRun = !(storage.getItem('reservaterque:seed') === SEED_VERSION && (await repos.caregivers.count()) > 0);
+  if (firstRun) {
+    for (const data of CAREGIVERS) await repos.caregivers.save(new Caregiver(data));
+    for (const owner of OWNERS) await repos.owners.save(owner);
+    storage.setItem('reservaterque:seed', SEED_VERSION);
+  }
+  await ensureUpcomingAvailability(container);
+  return firstRun;
+}
 
+// Mantiene la demo viva: si alguno de los próximos 7 días no tiene ningún
+// horario publicado (por ejemplo, porque la demo se abre semanas después),
+// se publica la agenda de ejemplo para ese día.
+export async function ensureUpcomingAvailability({ repos, clock }) {
   const today = dateKey(clock.now());
+  const slots = await repos.slots.findAll();
+  const covered = new Set(slots.map((s) => s.date));
   for (let day = 1; day <= 7; day += 1) {
     const date = addDays(today, day);
+    if (covered.has(date)) continue;
     for (const caregiver of CAREGIVERS) {
       for (const service of caregiver.services) {
         for (const [start, end] of PATTERNS[service]) {
-          // Se omiten algunos días para que la agenda se vea realista.
-          if ((day + caregiver.id.length + start.length) % 4 === 0) continue;
+          // Se omiten algunos espacios para que la agenda se vea realista.
+          if ((Number(date.slice(-2)) + caregiver.id.length + start.length) % 4 === 0) continue;
           await repos.slots.save(new Slot({ id: newId('slot'), caregiverId: caregiver.id, date, start, end, service }));
         }
       }
     }
   }
-  storage.setItem('reservaterque:seed', SEED_VERSION);
-  return true;
 }

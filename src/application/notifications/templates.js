@@ -25,7 +25,7 @@ export const TEMPLATES = Object.freeze({
     { to: 'admin', recipientId: 'admin', title: 'Pago tardío reembolsado', body: `${b.id}: aprobado tarde sobre un horario ocupado. Reembolso total.` },
   ],
   'booking.cancelled_by_owner': ({ booking: b, refundAmount }) => [
-    { to: 'owner', recipientId: b.ownerId, title: 'Reserva cancelada', body: `Cancelaste el ${what(b)}. Reembolso: ${formatCOP(refundAmount)}.` },
+    { to: 'owner', recipientId: b.ownerId, title: 'Reserva cancelada', body: `Cancelaste el ${what(b)}. ${refundAmount > 0 ? `Reembolso: ${formatCOP(refundAmount)}.` : 'Según la política del cuidador, no hay reembolso.'}` },
     { to: 'caregiver', recipientId: b.caregiverId, title: 'Una reserva fue cancelada', body: `${b.petName} ya no va el ${when(b)}. El horario quedó libre otra vez.` },
   ],
   'booking.cancelled_by_caregiver': ({ booking: b, alternatives }) => [
