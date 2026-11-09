@@ -24,7 +24,7 @@ function checkoutPanel(booking, payment, caregiverName, now) {
       <span class="tag__hole" aria-hidden="true"></span>
       <span class="tag__label">Horario apartado</span>
       ${countdown(booking.holdExpiresAt)}
-      <span class="tag__small">${waiting ? 'Te guardamos el horario mientras tu banco confirma' : 'para completar el pago'}</span>
+      <span class="tag__small">${waiting ? `Te guardamos el horario mientras ${payment.method === 'NEQUI' ? 'Nequi' : 'tu banco'} confirma` : 'para completar el pago'}</span>
     </div>
     <div class="checkout__body">
       <h2>${service.label} para ${booking.petName}</h2>
@@ -70,7 +70,7 @@ function bookingRow(b, caregivers, ui, preview, rescheduleOptions) {
     </div>
     ${when(ui.cancelFor === b.id && preview, () => html`
       <div class="inline-panel">
-        <p>Política ${preview.policy.label}: faltan ${Math.floor(preview.hoursBefore)} horas para el servicio, así que te devolvemos <strong>${formatCOP(preview.amount)}</strong> (${preview.ratio * 100} %).</p>
+        <p>Política ${preview.policy.label}: faltan ${Math.floor(preview.hoursBefore)} horas para el servicio, ${preview.amount > 0 ? html`así que te devolvemos <strong>${formatCOP(preview.amount)}</strong> (${preview.ratio * 100} %).` : html`así que <strong>esta cancelación no tiene reembolso</strong>.`}</p>
         <div class="row">
           <button type="button" class="btn btn--small btn--danger" data-action="owner-cancel-confirm" data-booking="${b.id}">Cancelar reserva</button>
           <button type="button" class="btn btn--small btn--ghost" data-action="owner-panel-close">Mantener reserva</button>
@@ -183,7 +183,7 @@ export const ownerView = {
     'owner-hold': async (ctx, el) => {
       const booking = await ctx.app.bookingService.requestBooking({ ownerId: ctx.ui.ownerId, petName: ctx.ui.search.pet, slotId: el.dataset.slot });
       ctx.ui.activeBookingId = booking.id;
-      ctx.toast('Horario apartado. Tienes 10 minutos para pagar.');
+      ctx.toast(`Horario apartado. Tienes ${ctx.app.config.holdMinutes} minutos para pagar.`);
     },
     'owner-pay': async (ctx, el, data) => {
       await ctx.app.paymentService.startPayment({ bookingId: el.dataset.booking, ownerId: ctx.ui.ownerId, method: data.get('method') });
@@ -199,7 +199,9 @@ export const ownerView = {
     'owner-cancel-confirm': async (ctx, el) => {
       const { refundAmount } = await ctx.app.bookingService.cancelByOwner(el.dataset.booking, ctx.ui.ownerId);
       ctx.ui.cancelFor = null;
-      ctx.toast(`Reserva cancelada. Reembolso de ${formatCOP(refundAmount)} en camino.`);
+      ctx.toast(refundAmount > 0
+        ? `Reserva cancelada. Reembolso de ${formatCOP(refundAmount)} en camino.`
+        : 'Reserva cancelada. Según la política del cuidador, esta cancelación no tiene reembolso.');
     },
     'owner-reschedule': async (ctx, el) => {
       await ctx.app.bookingService.reschedule(el.dataset.booking, ctx.ui.ownerId, el.dataset.slot);
