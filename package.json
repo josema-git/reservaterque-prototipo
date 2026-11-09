@@ -1,0 +1,14 @@
+{
+  "name": "reservaterque-prototipo",
+  "version": "1.0.0",
+  "description": "Prototipo funcional de ReservaTerque: reservas, pagos y confirmaciones automáticas.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve -l 5173 .",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" },
+  "author": "José Manuel Sánchez",
+  "license": "MIT"
+}
