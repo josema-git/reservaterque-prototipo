@@ -7,6 +7,7 @@
   --ink: #17212b;
   --muted: #5d6873;
   --line: #d3dad2;
+  --brand: #23573f;
   --forest: #23573f;
   --forest-soft: #e2ece5;
   --collar: #edb120;
@@ -28,6 +29,7 @@
     --ink: #e7ece8;
     --muted: #a3afa8;
     --line: #2f3b35;
+    --brand: #1b4532;
     --forest: #7fc59f;
     --forest-soft: #213a2d;
     --collar: #f2c14e;
@@ -61,7 +63,7 @@ code { font-size: 0.82em; color: var(--muted); }
   align-items: center;
   gap: 1.5rem;
   padding: 0.9rem clamp(1rem, 3vw, 2rem);
-  background: var(--forest);
+  background: var(--brand);
   color: #fff;
 }
 .brand { color: inherit; text-decoration: none; display: flex; flex-direction: column; }
